@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cờ Caro Multi Client</title>
+    <style>
+        #board {
+            display: grid;
+            grid-template-columns: repeat(15, 30px);
+            margin-top: 10px;
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #333;
+            text-align: center;
+            line-height: 30px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #turnWarning {
+            color: red;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        #winnerCard {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #winnerCard button {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+
+        #waitingText {
+            color: gray;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Cờ Caro Multi Client</h2>
+    <input id="roomId" placeholder="Nhập ID phòng">
+    <button onclick="createRoom()">Tạo phòng</button>
+    <button onclick="joinRoom()">Tham gia phòng</button>
+    <div id="messages"></div>
+    <div id="turnWarning"></div>
+    <div id="board"></div>
+
+    <!-- Card hiển thị người thắng -->
+    <div id="winnerCard">
+        <h3 id="winnerText"></h3>
+        <div id="waitingText"></div>
+        <button onclick="continueGame()">Tiếp tục chơi</button>
+        <button onclick="exitRoom()">Thoát phòng</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+
+</html>

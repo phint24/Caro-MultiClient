@@ -59,6 +59,35 @@ io.on("connection", (socket) => {
         }
     });
 
+    // Người chơi chọn tiếp tục
+    socket.on("continueGame", (roomId) => {
+        const room = rooms[roomId];
+        if (!room) return;
+
+        if (!room.continueVotes.includes(socket.id)) {
+            room.continueVotes.push(socket.id);
+        }
+
+        if (room.continueVotes.length === 2) {
+            // Cả hai đồng ý tiếp tục
+            room.board = Array(15).fill().map(() => Array(15).fill(null));
+            room.turn = "X";
+            room.continueVotes = [];
+            io.to(roomId).emit("restartGame");
+        } else {
+            socket.emit("waitingForOpponent");
+        }
+    });
+
+    // Người chơi thoát phòng
+    socket.on("exitRoom", (roomId) => {
+        const room = rooms[roomId];
+        if (!room) return;
+
+        io.to(roomId).emit("opponentLeft");
+        delete rooms[roomId];
+    });
+
     // Ngắt kết nối
     socket.on("disconnect", () => {
         console.log("Người chơi thoát:", socket.id);
