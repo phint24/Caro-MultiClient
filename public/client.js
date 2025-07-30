@@ -26,6 +26,8 @@ socket.on("roomCreated", (id) => {
     mySymbol = "X";
     myTurn = true; // X đi trước
     warningEl.innerText = "";
+    // Cập nhật số người chơi
+    document.getElementById("playerCount").innerText = "1/2";
 });
 
 socket.on("startGame", ({ roomId: id, players }) => {
@@ -37,11 +39,14 @@ socket.on("startGame", ({ roomId: id, players }) => {
     winnerCard.style.display = "none"; // ẩn card nếu đang hiện
     waitingForOpponent = false;
     resetBoard();
+    // Cập nhật số người chơi
+    document.getElementById("playerCount").innerText = "2/2";
 });
 
 socket.on("moveMade", ({ row, col, player }) => {
     const index = row * 15 + col;
-    boardEl.children[index].innerText = player;
+    const cell = boardEl.children[index];
+    cell.classList.add(player.toLowerCase());
 
     if (player === mySymbol) {
         myTurn = false;
@@ -72,6 +77,8 @@ socket.on("restartGame", () => {
 socket.on("opponentLeft", () => {
     warningEl.innerText = "Đối thủ đã thoát phòng.";
     winnerCard.style.display = "none";
+    // Cập nhật số người chơi
+    document.getElementById("playerCount").innerText = "1/2";
 });
 
 socket.on("errorMessage", (msg) => {
@@ -114,6 +121,7 @@ function exitRoom() {
 
 function resetBoard() {
     for (let i = 0; i < boardEl.children.length; i++) {
-        boardEl.children[i].innerText = "";
+        const cell = boardEl.children[i];
+        cell.classList.remove("x", "o");
     }
 }
