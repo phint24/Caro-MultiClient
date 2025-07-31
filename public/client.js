@@ -85,9 +85,14 @@ socket.on("errorMessage", (msg) => {
     warningEl.innerText = msg;
 });
 
+// function createRoom() {
+//     const id = document.getElementById("roomId").value;
+//     socket.emit("createRoom", id);
+// }
+
 function createRoom() {
-    const id = document.getElementById("roomId").value;
-    socket.emit("createRoom", id);
+    const id = document.getElementById("roomId").value.trim();
+    socket.emit("createRoom", id || null);
 }
 
 function joinRoom() {
