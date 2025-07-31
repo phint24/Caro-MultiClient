@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cờ Caro Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(to bottom right, #d0eafc, #f4f9fd);
+            text-align: center;
+            padding: 30px;
+            margin: 0;
+        }
+
+        h1 {
+            color: #0077cc;
+            margin-bottom: 20px;
+        }
+
+        #roomIdInput {
+            padding: 10px;
+            width: 200px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            margin-right: 8px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 15px;
+            margin: 5px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005fa3;
+        }
+
+        #gameArea {
+            margin-top: 30px;
+        }
+
+        #turnInfo {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(15, 35px);
+            gap: 2px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #aaa;
+            background-color: white;
+            font-size: 20px;
+            text-align: center;
+            line-height: 35px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .cell:hover {
+            background-color: #e6f2ff;
+        }
+
+        #messages {
+            color: #e60000;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Cờ Caro Online</h1>
+
+    <div>
+        <input type="text" id="roomIdInput" placeholder="Nhập mã phòng...">
+        <button onclick="createRoom()">Tạo phòng</button>
+        <button onclick="joinRoom()">Tham gia phòng</button>
+    </div>
+
+    <div id="gameArea" style="display:none;">
+        <h3 id="turnInfo">Lượt chơi: </h3>
+        <div id="board"></div>
+        <button onclick="sendContinue()">Chơi lại</button>
+        <button onclick="exitRoom()">Thoát</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
