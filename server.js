@@ -10,20 +10,46 @@ app.use(express.static("public"));
 
 let rooms = {}; // lưu thông tin phòng chơi
 
+function generateRoomId() {
+    const num = Math.floor(Math.random() * 1000);
+    return num.toString().padStart(3, '0');
+}
+
 io.on("connection", (socket) => {
     console.log("Người chơi kết nối:", socket.id);
 
     // Tạo phòng mới
-    socket.on("createRoom", (roomId) => {
-        if (!rooms[roomId]) {
-            rooms[roomId] = {
+    // socket.on("createRoom", (roomId) => {
+    //     if (!rooms[roomId]) {
+    //         rooms[roomId] = {
+    //             players: [socket.id],
+    //             board: Array(15).fill().map(() => Array(15).fill(null)),
+    //             turn: "X",
+    //             continueVotes: []
+    //         };
+    //         socket.join(roomId);
+    //         socket.emit("roomCreated", roomId);
+    //     } else {
+    //         socket.emit("errorMessage", "Phòng đã tồn tại");
+    //     }
+    // });
+    
+    socket.on("createRoom", (id) => {
+        if (!id) {
+            id = generateRoomId();
+        }
+        console.log("Create id: ", id)
+
+        if (!rooms[id]) {
+            rooms[id] = {
                 players: [socket.id],
                 board: Array(15).fill().map(() => Array(15).fill(null)),
                 turn: "X",
                 continueVotes: []
             };
-            socket.join(roomId);
-            socket.emit("roomCreated", roomId);
+            console.log('ID room: ', id)
+            socket.join(id);
+            socket.emit("roomCreated", id);
         } else {
             socket.emit("errorMessage", "Phòng đã tồn tại");
         }
@@ -31,15 +57,23 @@ io.on("connection", (socket) => {
 
     // Tham gia phòng
     socket.on("joinRoom", (roomId) => {
-        let room = rooms[roomId];
-        if (room && room.players.length === 1) {
-            room.players.push(socket.id);
-            socket.join(roomId);
-            io.to(roomId).emit("startGame", { roomId, players: room.players });
-        } else {
-            socket.emit("errorMessage", "Phòng không tồn tại hoặc đã đủ người");
+        const room = rooms[roomId];
+        if (!room) {
+            socket.emit("errorMessage", `Phòng với ID ${roomId} không tồn tại.`);
+            return;
         }
+
+        if (room.players.length >= 2) {
+            socket.emit("errorMessage", "Phòng đã đủ người.");
+            return;
+        }
+
+        room.players.push(socket.id);
+        socket.join(roomId)
+        console.log(`Da tham gia phong ${roomId}!`)
+        io.to(roomId).emit("startGame", { roomId, players: room.players });
     });
+
 
     // Xử lý nước đi
     socket.on("makeMove", ({ roomId, row, col }) => {
