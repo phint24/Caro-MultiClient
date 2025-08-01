@@ -84,12 +84,14 @@ io.on("connection", (socket) => {
             room.board[row][col] = room.turn;
             io.to(roomId).emit("moveMade", { row, col, player: room.turn });
 
-            if (checkWin(room.board, row, col, room.turn)) {
-                io.to(roomId).emit("gameOver", { winner: room.turn });
+            const winCells = getWinningLine(room.board, row, col, room.turn);
+            if (winCells) {
+                io.to(roomId).emit("gameOver", { winner: room.turn, winCells });
                 room.continueVotes = [];
             } else {
                 room.turn = room.turn === "X" ? "O" : "X";
             }
+
         }
     });
 
@@ -134,29 +136,58 @@ io.on("connection", (socket) => {
             }
         }
     });
+
 });
 
 // Hàm kiểm tra thắng
-function checkWin(board, r, c, player) {
-    const directions = [
-        [[0, 1], [0, -1]],
-        [[1, 0], [-1, 0]],
-        [[1, 1], [-1, -1]],
-        [[1, -1], [-1, 1]]
-    ];
-    for (let dir of directions) {
-        let count = 1;
-        for (let [dx, dy] of dir) {
-            let x = r + dx, y = c + dy;
-            while (x >= 0 && y >= 0 && x < 15 && y < 15 && board[x][y] === player) {
-                count++;
-                x += dx; y += dy;
-            }
-        }
-        if (count >= 5) return true;
+// function getWinningLine(board, r, c, player) {
+//     const directions = [
+//         [[0, 1], [0, -1]],
+//         [[1, 0], [-1, 0]],
+//         [[1, 1], [-1, -1]],
+//         [[1, -1], [-1, 1]]
+//     ];
+//     for (let dir of directions) {
+//         let count = 1;
+//         for (let [dx, dy] of dir) {
+//             let x = r + dx, y = c + dy;
+//             while (x >= 0 && y >= 0 && x < 15 && y < 15 && board[x][y] === player) {
+//                 count++;
+//                 x += dx; y += dy;
+//             }
+//         }
+//         if (count >= 5) return true;
+//     }
+//     return false;
+// }
+
+// Trả về mảng winCells nếu có chuỗi >=5, ngược lại null
+function getWinningLine(board, r, c, player) {
+  const dirs = [
+    [[0,1],[0,-1]],
+    [[1,0],[-1,0]],
+    [[1,1],[-1,-1]],
+    [[1,-1],[-1,1]]
+  ];
+  for (let [[dx1,dy1],[dx2,dy2]] of dirs) {
+    const cells = [{ row: r, col: c }];
+    let x = r + dx1, y = c + dy1;
+    while (x>=0 && y>=0 && x<15 && y<15 && board[x][y]===player) {
+      cells.push({ row: x, col: y });
+      x += dx1; y += dy1;
     }
-    return false;
+    x = r + dx2; y = c + dy2;
+    while (x>=0 && y>=0 && x<15 && y<15 && board[x][y]===player) {
+      cells.unshift({ row: x, col: y });
+      x += dx2; y += dy2;
+    }
+    if (cells.length >= 5) {
+      return cells;
+    }
+  }
+  return null;
 }
+
 
 server.listen(3000, () => {
     console.log("Server is running: http://localhost:3000");
