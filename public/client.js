@@ -131,7 +131,6 @@ function resetBoard() {
     }
 }
 
-// boardEl đã là: document.getElementById("board");
 // đảm bảo boardEl position: relative;
 boardEl.style.position = "relative";
 
@@ -170,7 +169,7 @@ function drawWinLine(cells, onComplete) {
   const x2 = lcRect.left + lcRect.width/2  - offsetX;
   const y2 = lcRect.top  + lcRect.height/2 - offsetY;
 
-  // animation vẽ dần
+  // animation 
   let t = 0;
   function step() {
     winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
