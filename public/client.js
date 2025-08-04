@@ -85,11 +85,6 @@ socket.on("errorMessage", (msg) => {
     warningEl.innerText = msg;
 });
 
-// function createRoom() {
-//     const id = document.getElementById("roomId").value;
-//     socket.emit("createRoom", id);
-// }
-
 function createRoom() {
     const id = document.getElementById("roomId").value.trim();
     socket.emit("createRoom", id || null);
@@ -131,7 +126,6 @@ function resetBoard() {
     }
 }
 
-// đảm bảo boardEl position: relative;
 boardEl.style.position = "relative";
 
 // tạo canvas ghi line
@@ -149,68 +143,68 @@ boardEl.appendChild(winCanvas);
 const winCtx = winCanvas.getContext("2d");
 
 function drawWinLine(cells, onComplete) {
-  // resize canvas chính xác bằng kích thước board
-  const rect = boardEl.getBoundingClientRect();
-  winCanvas.width  = rect.width;
-  winCanvas.height = rect.height;
+    // resize canvas chính xác bằng kích thước board
+    const rect = boardEl.getBoundingClientRect();
+    winCanvas.width = rect.width;
+    winCanvas.height = rect.height;
 
-  // lấy cell size & offset
-  const cellEls = boardEl.getElementsByClassName("cell");
-  const firstCell = cellEls[cells[0].row * 15 + cells[0].col];
-  const lastCell  = cellEls[cells[cells.length - 1].row * 15 + cells[cells.length - 1].col];
-  const fcRect = firstCell.getBoundingClientRect();
-  const lcRect = lastCell.getBoundingClientRect();
+    // lấy cell size & offset
+    const cellEls = boardEl.getElementsByClassName("cell");
+    const firstCell = cellEls[cells[0].row * 15 + cells[0].col];
+    const lastCell = cellEls[cells[cells.length - 1].row * 15 + cells[cells.length - 1].col];
+    const fcRect = firstCell.getBoundingClientRect();
+    const lcRect = lastCell.getBoundingClientRect();
 
-  // toạ độ trung tâm ô, tính relative so với board
-  const offsetX = rect.left;
-  const offsetY = rect.top;
-  const x1 = fcRect.left + fcRect.width/2 - offsetX;
-  const y1 = fcRect.top  + fcRect.height/2 - offsetY;
-  const x2 = lcRect.left + lcRect.width/2  - offsetX;
-  const y2 = lcRect.top  + lcRect.height/2 - offsetY;
+    // toạ độ trung tâm ô, tính relative so với board
+    const offsetX = rect.left;
+    const offsetY = rect.top;
+    const x1 = fcRect.left + fcRect.width / 2 - offsetX;
+    const y1 = fcRect.top + fcRect.height / 2 - offsetY;
+    const x2 = lcRect.left + lcRect.width / 2 - offsetX;
+    const y2 = lcRect.top + lcRect.height / 2 - offsetY;
 
-  // animation 
-  let t = 0;
-  function step() {
-    winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
-    winCtx.beginPath();
-    winCtx.strokeStyle = "red";
-    winCtx.lineWidth   = 6;
-    winCtx.moveTo(x1, y1);
-    winCtx.lineTo(
-      x1 + (x2 - x1) * t,
-      y1 + (y2 - y1) * t
-    );
-    winCtx.stroke();
+    // animation 
+    let t = 0;
+    function step() {
+        winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+        winCtx.beginPath();
+        winCtx.strokeStyle = "red";
+        winCtx.lineWidth = 6;
+        winCtx.moveTo(x1, y1);
+        winCtx.lineTo(
+            x1 + (x2 - x1) * t,
+            y1 + (y2 - y1) * t
+        );
+        winCtx.stroke();
 
-    if (t < 1) {
-      t += 0.02;
-      requestAnimationFrame(step);
-    } else {
-      if (onComplete) onComplete();
+        if (t < 1) {
+            t += 0.02;
+            requestAnimationFrame(step);
+        } else {
+            if (onComplete) onComplete();
+        }
     }
-  }
-  requestAnimationFrame(step);
+    requestAnimationFrame(step);
 }
 
 socket.on("gameOver", ({ winner, winCells }) => {
-  // 1) vẽ đường thắng trước
-  drawWinLine(winCells, () => {
-    // 2) sau khi vẽ xong mới show modal
-    winnerText.innerText = "Người thắng: " + winner;
-    waitingText.innerText = "";
-    winnerCard.style.display = "block";
-  });
-  myTurn = false;
+    // vẽ đường thắng trước
+    drawWinLine(winCells, () => {
+        //sau khi vẽ xong mới show modal
+        winnerText.innerText = "Người thắng: " + winner;
+        waitingText.innerText = "";
+        winnerCard.style.display = "block";
+    });
+    myTurn = false;
 });
 
 function resetBoard() {
-  for (let i = 0; i < boardEl.children.length; i++) {
-    const cell = boardEl.children[i];
-    cell.classList.remove("x", "o");
-    cell.innerText = "";   // nếu có text
-  }
-  // xóa line cũ
-  winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
+    for (let i = 0; i < boardEl.children.length; i++) {
+        const cell = boardEl.children[i];
+        cell.classList.remove("x", "o");
+        cell.innerText = "";   // nếu có text
+    }
+    // xóa line cũ
+    winCtx.clearRect(0, 0, winCanvas.width, winCanvas.height);
 }
 

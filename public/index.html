@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cờ Caro Multi Client | Sang trọng</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Cờ Caro</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>Cờ Caro Multi Client</h1>
-            <p class="subtitle">Chơi cờ caro trực tuyến với bạn bè. Tạo phòng hoặc tham gia phòng để bắt đầu trận đấu!</p>
+            <h1>Cờ Caro</h1>
+            <p class="subtitle">Tạo phòng hoặc tham gia phòng để bắt đầu trận đấu!
+            </p>
         </header>
-        
+
         <section class="room-section">
             <div class="section-title">
                 <i class="fas fa-door-open"></i>
@@ -32,7 +37,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section class="game-section">
             <div class="game-info">
                 <div class="info-item">
@@ -44,18 +49,18 @@
                     <div class="info-value" id="playerCount">0/2</div>
                 </div>
             </div>
-            
+
             <div class="board-container">
                 <div id="board"></div>
             </div>
-            
+
             <div id="messages"></div>
         </section>
-        
+
         <footer>
-            <p>© 2023 Cờ Caro Multi Client | Thiết kế sang trọng</p>
+            <p>©Cờ Caro - Nhóm 10</p>
         </footer>
-        
+
         <!-- Card hiển thị người thắng -->
         <div id="winnerCard">
             <h3>Kết quả trận đấu</h3>
@@ -74,4 +79,5 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 </body>
+
 </html>
